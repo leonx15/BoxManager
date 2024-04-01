@@ -1,0 +1,22 @@
+<!-- templates/my_boxes.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Boxes</title>
+</head>
+<body>
+    <h1>My Boxes</h1>
+    <ul>
+        {% for box in boxes %}
+            <li>
+                <strong><a href="{{ url_for('boxes.box_details', box_id=box.id) }}">{{ box.name }}</a></strong>: {{ box.description }}
+                <!-- Optionally, include a link to edit or delete the box -->
+            </li>
+        {% else %}
+            <li>No boxes found.</li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('boxes.add_box') }}">Add a new box</a>
+</body>
+</html>

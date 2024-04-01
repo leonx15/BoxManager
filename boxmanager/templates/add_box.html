@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Box</title>
+</head>
+<body>
+    <h1>Add a New Box</h1>
+    <form action="/add_box" method="post">
+        <input type="hidden" name="owner_id" value="{{ user_id }}">
+        <label for="name">Box Name:</label>
+        <input type="text" id="name" name="name" required>
+        <br>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description"></textarea>
+        <br>
+        <input type="submit" value="Add Box">
+    </form>
+</body>
+</html>

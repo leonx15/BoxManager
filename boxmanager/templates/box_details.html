@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ box.name }}</title>
+</head>
+<body>
+    <h1>{{ box.name }}</h1>
+    <p>{{ box.description }}</p>
+    <h2>Items</h2>
+    <ul>
+        {% for item in box.items %}
+            <li>{{ item.name }} - {{ item.description }} - Ilość: {{item.quantity}}</li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('boxes.add_item', box_id=box.id) }}">Add Item to Box</a>
+</body>
+</html>
