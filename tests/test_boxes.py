@@ -58,3 +58,16 @@ def test_add_item_access_control(app, client, register, login):
     with client.session_transaction() as sess:
         messages = [msg for _c, msg in sess.get('_flashes', [])]
         assert 'You do not have access to this box.' in messages
+
+
+def test_scanner_requires_login(client):
+    response = client.get('/scanner')
+    assert response.status_code == 401
+
+
+def test_scanner_route_logged_in(client, register, login):
+    register('scanner')
+    login('scanner')
+    response = client.get('/scanner')
+    assert response.status_code == 200
+    assert b'Scan 1D/2D Code' in response.data
