@@ -78,7 +78,8 @@ def add_item(box_id):
         name = request.form['name']
         description = request.form.get('description', '')
         quantity = request.form.get('quantity', 1, type=int)  # Default quantity to 1 if not provided
-        new_item = Item(name=name, description=description, quantity=quantity, box_id=box_id)
+        ean_code = request.form.get('ean_code') or None
+        new_item = Item(name=name, description=description, quantity=quantity, box_id=box_id, ean_code=ean_code)
         db.session.add(new_item)
         db.session.commit()
         flash('Item added successfully!', 'success')
@@ -92,3 +93,24 @@ def scanner():
     """Display barcode/QR code scanner page."""
     session.permanent = True
     return render_template('scanners.html')
+
+
+@boxes.route('/api/items/<string:ean_code>')
+@login_required
+def get_item_by_code(ean_code):
+    """Return item details as JSON for the given EAN code."""
+    item = (
+        Item.query.join(Box)
+        .filter(Item.ean_code == ean_code, Box.owner_id == current_user.id)
+        .first()
+    )
+    if not item:
+        return {"error": "Item not found"}, 404
+    return {
+        "id": item.id,
+        "name": item.name,
+        "description": item.description,
+        "ean_code": item.ean_code,
+        "quantity": item.quantity,
+        "box_id": item.box_id,
+    }

@@ -71,3 +71,26 @@ def test_scanner_route_logged_in(client, register, login):
     response = client.get('/scanner')
     assert response.status_code == 200
     assert b'Scan 1D/2D Code' in response.data
+
+
+def test_get_item_by_code(client, register, login, app):
+    register('codeuser')
+    login('codeuser')
+    client.post('/add_box', data={'name': 'BoxCode'})
+    with app.app_context():
+        box = Box.query.filter_by(name='BoxCode').first()
+    client.post(
+        f'/box/{box.id}/add_item',
+        data={'name': 'ItemCode', 'description': 'desc', 'quantity': 1, 'ean_code': '111'},
+    )
+    response = client.get('/api/items/111')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['name'] == 'ItemCode'
+    assert data['ean_code'] == '111'
+    assert data['box_id'] == box.id
+
+
+def test_get_item_by_code_requires_login(client):
+    response = client.get('/api/items/somecode')
+    assert response.status_code == 401
