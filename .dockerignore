@@ -4,3 +4,4 @@ __pycache__/
 *.pyd
 BoxManager.zip
 tests/
+docker-compose.yml
