@@ -1,7 +1,7 @@
 name: Coverage
 
 on:
-  pull_request:
+  pull_request_target:
   push:
     branches: [main]
 
@@ -10,9 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      issues: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
+        if: github.event_name == 'pull_request_target'
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/checkout@v4
+        if: github.event_name != 'pull_request_target'
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
@@ -29,7 +34,7 @@ jobs:
           name: htmlcov
           path: htmlcov
       - name: Comment coverage on PR
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request_target'
         uses: actions/github-script@v7
         with:
           github-token: ${{ github.token }}
