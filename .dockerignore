@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+build/
+dist/
+*.egg-info/
+*.db
+*.sqlite
+*.db.sqlite3
+BoxManager.zip
+pytest_cache/
+tests/
