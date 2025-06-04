@@ -38,7 +38,7 @@ jobs:
             const xml = fs.readFileSync('coverage.xml', 'utf8');
             const match = xml.match(/line-rate="([0-9.]+)"/);
             const coverage = match ? (parseFloat(match[1]) * 100).toFixed(1) : 'N/A';
-            const artifactUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}/artifacts`;
+            const artifactUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}#artifacts`;
             const body = `Test coverage: **${coverage}%**\n[Download HTML report](${artifactUrl})`;
             github.rest.issues.createComment({
               issue_number: context.issue.number,
