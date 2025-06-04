@@ -1,20 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Add Box</title>
-</head>
-<body>
-    <h1>Add a New Box</h1>
-    <form action="/add_box" method="post">
-        <input type="hidden" name="owner_id" value="{{ user_id }}">
-        <label for="name">Box Name:</label>
-        <input type="text" id="name" name="name" required>
-        <br>
-        <label for="description">Description:</label>
-        <textarea id="description" name="description"></textarea>
-        <br>
-        <input type="submit" value="Add Box">
-    </form>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}Add Box{% endblock %}
+{% block content %}
+<h1>Add a New Box</h1>
+<form action="/add_box" method="post">
+    <input type="hidden" name="owner_id" value="{{ owner_id }}">
+    <div class="mb-3">
+        <label for="name" class="form-label">Box Name:</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Description:</label>
+        <textarea class="form-control" id="description" name="description"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Box</button>
+</form>
+{% endblock %}

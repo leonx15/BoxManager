@@ -23,8 +23,7 @@ def test_login_invalid_credentials(client, register, login):
     register('dave')
     response = login('dave', password='wrong', follow_redirects=True)
     assert response.status_code == 200
-    with client.session_transaction() as sess:
-        assert ('message', 'Invalid username or password') in sess.get('_flashes', [])
+    assert b'Invalid username or password' in response.data
 
 
 def test_home_redirects_when_logged_out(client):

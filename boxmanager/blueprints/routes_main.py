@@ -20,9 +20,8 @@ def load_user(user_id):
 @main.route('/')
 def home():
     if current_user.is_authenticated:
-        return f'Hello, {current_user.username}! <a href="/logout">Logout</a>'
-    else:
-        return redirect(url_for('main.login'))
+        return render_template('home.html')
+    return redirect(url_for('main.login'))
 
 
 @main.route('/login', methods=['GET', 'POST'])
