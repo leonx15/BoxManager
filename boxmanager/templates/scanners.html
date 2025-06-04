@@ -15,6 +15,7 @@
 </div>
 <label>Result:</label>
 <pre><code id="result"></code></pre>
+<div id="itemDetails" class="mt-3"></div>
 <script src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
 <script>
 window.addEventListener('load', function () {
@@ -37,6 +38,16 @@ window.addEventListener('load', function () {
       codeReader.decodeFromVideoDevice(selectedDeviceId, 'video', (result, err) => {
         if (result) {
           document.getElementById('result').textContent = result.text;
+          fetch(`/api/items/${result.text}`)
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+              const detailDiv = document.getElementById('itemDetails');
+              if (data) {
+                detailDiv.textContent = `Item: ${data.name} (qty ${data.quantity})`;
+              } else {
+                detailDiv.textContent = 'Item not found';
+              }
+            });
         }
         if (err && !(err instanceof ZXing.NotFoundException)) {
           document.getElementById('result').textContent = err;
@@ -46,6 +57,7 @@ window.addEventListener('load', function () {
     document.getElementById('resetButton').addEventListener('click', () => {
       codeReader.reset();
       document.getElementById('result').textContent = '';
+      document.getElementById('itemDetails').textContent = '';
     });
   }).catch((err) => { console.error(err); });
 });

@@ -6,7 +6,10 @@
 <h2>Items</h2>
 <ul class="list-group">
     {% for item in box.items %}
-    <li class="list-group-item">{{ item.name }} - {{ item.description }} - Qty: {{ item.quantity }}</li>
+    <li class="list-group-item">
+        {{ item.name }} - {{ item.description }} - Qty: {{ item.quantity }}
+        {% if item.ean_code %}<br><small>EAN: {{ item.ean_code }}</small>{% endif %}
+    </li>
     {% endfor %}
 </ul>
 <a class="btn btn-primary mt-3" href="{{ url_for('boxes.add_item', box_id=box.id) }}">Add Item to Box</a>
