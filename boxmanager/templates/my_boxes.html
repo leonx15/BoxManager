@@ -1,22 +1,15 @@
-<!-- Lists boxes owned by the current user -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>My Boxes</title>
-</head>
-<body>
-    <h1>My Boxes</h1>
-    <ul>
-        {% for box in boxes %}
-            <li>
-                <strong><a href="{{ url_for('boxes.box_details', box_id=box.id) }}">{{ box.name }}</a></strong>: {{ box.description }}
-                <!-- Optionally, include a link to edit or delete the box -->
-            </li>
-        {% else %}
-            <li>No boxes found.</li>
-        {% endfor %}
-    </ul>
-    <a href="{{ url_for('boxes.add_box') }}">Add a new box</a>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}My Boxes{% endblock %}
+{% block content %}
+<h1>My Boxes</h1>
+<ul class="list-group">
+    {% for box in boxes %}
+        <li class="list-group-item">
+            <strong><a href="{{ url_for('boxes.box_details', box_id=box.id) }}">{{ box.name }}</a></strong>: {{ box.description }}
+        </li>
+    {% else %}
+        <li class="list-group-item">No boxes found.</li>
+    {% endfor %}
+</ul>
+<a class="btn btn-primary mt-3" href="{{ url_for('boxes.add_box') }}">Add a new box</a>
+{% endblock %}

@@ -84,3 +84,11 @@ def add_item(box_id):
         flash('Item added successfully!', 'success')
         return redirect(url_for('boxes.box_details', box_id=box_id))
     return render_template('add_item.html', box=box)  # pragma: no cover
+
+
+@boxes.route('/scanner')
+@login_required
+def scanner():
+    """Display barcode/QR code scanner page."""
+    session.permanent = True
+    return render_template('scanners.html')
