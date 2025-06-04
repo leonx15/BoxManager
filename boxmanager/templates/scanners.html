@@ -35,6 +35,7 @@ window.addEventListener('load', function () {
       document.getElementById('sourceSelectPanel').style.display = 'block';
     }
     document.getElementById('startButton').addEventListener('click', () => {
+      document.getElementById('video').style.display = 'block';
       codeReader.decodeFromVideoDevice(selectedDeviceId, 'video', (result, err) => {
         if (result) {
           document.getElementById('result').textContent = result.text;
@@ -48,6 +49,8 @@ window.addEventListener('load', function () {
                 detailDiv.textContent = 'Item not found';
               }
             });
+          codeReader.reset();
+          document.getElementById('video').style.display = 'none';
         }
         if (err && !(err instanceof ZXing.NotFoundException)) {
           document.getElementById('result').textContent = err;

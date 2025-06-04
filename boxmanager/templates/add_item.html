@@ -13,7 +13,10 @@
     </div>
     <div class="mb-3">
         <label for="ean_code" class="form-label">EAN Code:</label>
-        <input type="text" class="form-control" id="ean_code" name="ean_code">
+        <div class="input-group">
+            <input type="text" class="form-control" id="ean_code" name="ean_code">
+            <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#scanModal">Scan</button>
+        </div>
     </div>
     <div class="mb-3">
         <label for="quantity" class="form-label">Quantity:</label>
@@ -21,4 +24,43 @@
     </div>
     <button type="submit" class="btn btn-primary">Add Item</button>
 </form>
+
+<!-- Scanner Modal -->
+<div class="modal fade" id="scanModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Scan Code</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <video id="videoPreview" width="300" height="200" style="border:1px solid gray"></video>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const codeReader = new ZXing.BrowserMultiFormatReader();
+
+  document.getElementById('scanModal').addEventListener('shown.bs.modal', () => {
+    codeReader.decodeFromVideoDevice(null, 'videoPreview', (result, err) => {
+      if (result) {
+        document.getElementById('ean_code').value = result.text;
+        codeReader.reset();
+        bootstrap.Modal.getInstance(document.getElementById('scanModal')).hide();
+      }
+      if (err && !(err instanceof ZXing.NotFoundException)) {
+        console.error(err);
+      }
+    });
+  });
+
+  document.getElementById('scanModal').addEventListener('hidden.bs.modal', () => {
+    codeReader.reset();
+  });
+});
+</script>
 {% endblock %}
