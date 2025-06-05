@@ -114,3 +114,16 @@ def get_item_by_code(ean_code):
         "quantity": item.quantity,
         "box_id": item.box_id,
     }
+
+
+@boxes.route('/low_stock_items')
+@login_required
+def low_stock_items():
+    """Display items which have quantity equal to 1."""
+    session.permanent = True
+    items = (
+        Item.query.join(Box)
+        .filter(Box.owner_id == current_user.id, Item.quantity == 1)
+        .all()
+    )
+    return render_template('low_stock_items.html', items=items)
