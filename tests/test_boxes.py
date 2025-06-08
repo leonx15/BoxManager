@@ -91,6 +91,48 @@ def test_get_item_by_code(client, register, login, app):
     assert data['box_id'] == box.id
 
 
+def test_get_item_by_code_not_found(client, register, login, app):
+    """A logged-in user should receive 404 JSON when code does not exist."""
+    register('missing')
+    login('missing')
+    client.post('/add_box', data={'name': 'EmptyBox'})
+    with app.app_context():
+        box = Box.query.filter_by(name='EmptyBox').first()
+    # Add a different item code
+    client.post(
+        f'/box/{box.id}/add_item',
+        data={'name': 'ItemX', 'description': 'd', 'quantity': 1, 'ean_code': '999'},
+    )
+    response = client.get('/api/items/does_not_exist')
+    assert response.status_code == 404
+    assert response.get_json() == {"error": "Item not found"}
+
+
 def test_get_item_by_code_requires_login(client):
     response = client.get('/api/items/somecode')
     assert response.status_code == 401
+
+
+def test_low_stock_items_requires_login(client):
+    response = client.get('/low_stock_items')
+    assert response.status_code == 401
+
+
+def test_low_stock_items_view(client, register, login, app):
+    register('lowuser')
+    login('lowuser')
+    client.post('/add_box', data={'name': 'StockBox'})
+    with app.app_context():
+        box = Box.query.filter_by(name='StockBox').first()
+    client.post(
+        f'/box/{box.id}/add_item',
+        data={'name': 'AlmostGone', 'description': 'd', 'quantity': 1},
+    )
+    client.post(
+        f'/box/{box.id}/add_item',
+        data={'name': 'Plenty', 'description': 'd', 'quantity': 3},
+    )
+    response = client.get('/low_stock_items')
+    assert response.status_code == 200
+    assert b'AlmostGone' in response.data
+    assert b'Plenty' not in response.data
